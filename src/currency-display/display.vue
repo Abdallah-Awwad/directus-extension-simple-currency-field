@@ -78,6 +78,16 @@ const locale = computed(() => localeSettings.value.locale);
  */
 const formattedValue = computed(() => {
 	if (props.value === null || props.value === undefined) return '';
+
+	if (!configuredCurrency) {
+		return new Intl.NumberFormat(locale.value, {
+			style: 'decimal',
+			useGrouping: true,
+			minimumFractionDigits: scale,
+			maximumFractionDigits: scale,
+		}).format(Number(props.value));
+	}
+
 	return new Intl.NumberFormat(locale.value, {
 		style: 'currency',
 		currency: configuredCurrency,

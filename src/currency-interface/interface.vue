@@ -95,10 +95,13 @@ const decimalSeparator = computed(() => {
  * @returns {string} A string representing the currency prefix.
  */
 const prefix = computed(() => {
+	const currency = props.currency === undefined ? 'USD' : props.currency;
+	if (!currency) return null;
+
 	return `${Intl
 		.NumberFormat(locale.value, {
 			style: 'currency',
-			currency: props?.currency || 'USD',
+			currency: currency,
 			currencyDisplay: 'symbol',
 		})
 		.formatToParts(0)

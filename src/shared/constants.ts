@@ -2,6 +2,7 @@ export const DEFAULT_CURRENCY = 'USD';
 
 export const DEFAULT_CURRENCIES = [
 	// Most common currencies first
+	{ text: 'None', value: null },
 	{ text: 'Euro (€)', value: 'EUR' },
 	{ text: 'United States Dollar ($)', value: 'USD' },
 	{ text: 'British Pound (£)', value: 'GBP' },
