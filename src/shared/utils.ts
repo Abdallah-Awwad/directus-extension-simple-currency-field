@@ -1,4 +1,5 @@
 import { useStores } from '@directus/extensions-sdk';
+import { computed } from 'vue';
 
 /** Represents a language/locale identifier (e.g., 'en-US', 'fr-FR') */
 type Locale = string;
@@ -11,20 +12,21 @@ interface LocaleSettings {
 /**
  * Retrieves the locale settings based on user preferences and system defaults.
  *
- * @returns {LocaleSettings} An object containing the resolved locale,
+ * @returns {object} An object containing the resolved locale validation,
  * prioritizing user language settings, then system defaults, falling back to 'en-US'.
  */
-export function getLocaleSettings(): LocaleSettings {
+export function useLocaleSettings() {
 	const { useUserStore, useSettingsStore } = useStores();
 	const userStore = useUserStore();
 	const settingsStore = useSettingsStore();
 
-	return {
-		locale:
-			userStore.currentUser?.language
+	const locale = computed(() => {
+		return userStore.currentUser?.language
 			|| settingsStore.settings?.default_language
-			|| 'en-US',
-	};
+			|| 'en-US';
+	});
+
+	return { locale };
 }
 
 /** Represents the precision of a numeric field (total number of digits). Null if not specified */

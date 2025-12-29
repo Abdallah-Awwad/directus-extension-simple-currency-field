@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { getFieldPrecisionAndScale, getLocaleSettings } from '../shared/utils.js';
+import { getFieldPrecisionAndScale, useLocaleSettings } from '../shared/utils.js';
 
 //
 // Setup and types
@@ -46,27 +46,12 @@ const emit = defineEmits<{
 }>();
 
 const rawInput = ref('');
-const [,numericScale] = getFieldPrecisionAndScale(props.collection, props.field);
+const [, numericScale] = getFieldPrecisionAndScale(props.collection, props.field);
 const scale = numericScale ?? 0;
 
-/**
- * @computed
- * Reactive wrapper for the current locale configuration.
- * Updates automatically when locale settings change.
- *
- * @returns {LocaleSettings} Current locale settings object
- */
-const localeSettings = computed(() =>
-	getLocaleSettings(),
-);
+const { locale } = useLocaleSettings();
 
-/**
- * @computed
- * Current locale identifier used for formatting.
- *
- * @returns {string} The current locale string
- */
-const locale = computed(() => localeSettings.value.locale);
+
 
 /**
  * @computed
@@ -123,7 +108,7 @@ function cleanValueString(value: string) {
 		.replaceAll(/[^\d.,-]/g, '')
 		// Then handle the minus sign specifically
 		.replaceAll(/(?!^)-/g, '')
-	;
+		;
 }
 
 /**
@@ -181,10 +166,10 @@ function formatNumber(value: string, options: FormatNumberOptions) {
 
 	return !Number.isNaN(number)
 		? new Intl.NumberFormat(locale.value, {
-				minimumFractionDigits: scale,
-				maximumFractionDigits: scale,
-				useGrouping,
-			}).format(number)
+			minimumFractionDigits: scale,
+			maximumFractionDigits: scale,
+			useGrouping,
+		}).format(number)
 		: '';
 }
 
@@ -316,15 +301,7 @@ function handlePaste(event: ClipboardEvent) {
 </script>
 
 <template>
-	<v-input
-		:model-value="inputValue"
-		type="text"
-		:prefix="prefix"
-		inputmode="decimal"
-		:pattern="`^-?\\d*${decimalSeparator}?\\d*$`"
-		@input="handleInput"
-		@paste="handlePaste"
-		@blur="() => handleFocusOrBlurEvent(false)"
-		@focus="() => handleFocusOrBlurEvent(true)"
-	/>
+	<v-input :model-value="inputValue" type="text" :prefix="prefix" inputmode="decimal"
+		:pattern="`^-?\\d*${decimalSeparator}?\\d*$`" @input="handleInput" @paste="handlePaste"
+		@blur="() => handleFocusOrBlurEvent(false)" @focus="() => handleFocusOrBlurEvent(true)" />
 </template>

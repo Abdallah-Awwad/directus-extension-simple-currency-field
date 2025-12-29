@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { getFieldPrecisionAndScale, getLocaleSettings } from '../shared/utils.js';
+import { getFieldPrecisionAndScale, useLocaleSettings } from '../shared/utils.js';
 
 //
 // Setup and types
@@ -41,24 +41,9 @@ const [, numericScale] = getFieldPrecisionAndScale(
 );
 const scale = numericScale ?? 2;
 
-/**
- * @computed
- * Reactive wrapper for the current locale configuration.
- * Updates automatically when locale settings change.
- *
- * @returns {LocaleSettings} Current locale settings object
- */
-const localeSettings = computed(() =>
-	getLocaleSettings(),
-);
+const { locale } = useLocaleSettings();
 
-/**
- * @computed
- * Current locale identifier used for formatting.
- *
- * @returns {string} The current locale string
- */
-const locale = computed(() => localeSettings.value.locale);
+
 
 /**
  * @computed
